@@ -21,7 +21,7 @@ const RevenueChart = ({ width = 600, height = 300, margin = { top: 20, right: 20
   const xMax = width - margin.left - margin.right;
   const yMax = height - margin.top - margin.bottom;
 
-  const xScale = scaleTime<number>({  // Change type to number
+  const xScale = scaleTime<number>({
     range: [0, xMax],
     domain: [Math.min(...revenueData.map(d => getDate(d).getTime())), Math.max(...revenueData.map(d => getDate(d).getTime()))], // Convert Date to number
   });
@@ -44,7 +44,7 @@ const RevenueChart = ({ width = 600, height = 300, margin = { top: 20, right: 20
           </span>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className='mb-3'>
         <svg width={width} height={height}>
           <Group top={margin.top} left={margin.left}>
             <LinePath

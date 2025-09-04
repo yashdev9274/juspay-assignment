@@ -1,52 +1,34 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Pie, { ProvidedProps, PieArcDatum } from '@visx/shape/lib/shapes/Pie';
 import { scaleOrdinal } from '@visx/scale';
 import { Group } from '@visx/group';
-import { GradientPinkBlue } from '@visx/gradient';
-import letterFrequency, { LetterFrequency } from '@visx/mock-data/lib/mocks/letterFrequency';
-import browserUsage, { BrowserUsage as Browsers } from '@visx/mock-data/lib/mocks/browserUsage';
 import { animated, useTransition, interpolate, SpringValue } from '@react-spring/web';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ParentSize } from '@visx/responsive';
+import { totalSalesData } from "@/lib/mock-data";
 
-// data and types
-type BrowserNames = keyof Browsers;
-
-interface BrowserUsage {
-  label: BrowserNames;
-  usage: number;
+interface SalesDatum {
+  label: string;
+  value: number;
+  amount: string;
 }
 
-const letters: LetterFrequency[] = letterFrequency.slice(0, 4);
-const browserNames = Object.keys(browserUsage[0]).filter((k) => k !== 'date') as BrowserNames[];
-const browsers: BrowserUsage[] = browserNames.map((name) => ({
-  label: name,
-  usage: Number(browserUsage[0][name]),
-}));
+const totalSales = totalSalesData;
 
-// accessor functions
-const usage = (d: BrowserUsage) => d.usage;
-const frequency = (d: LetterFrequency) => d.frequency;
+const salesValue = (d: SalesDatum) => d.value;
 
 // color scales
-const getBrowserColor = scaleOrdinal({
-  domain: browserNames,
+const getSalesColor = scaleOrdinal({
+  domain: totalSales.map((d) => d.label),
   range: [
-    'rgba(255,255,255,0.7)',
-    'rgba(255,255,255,0.6)',
-    'rgba(255,255,255,0.5)',
-    'rgba(255,255,255,0.4)',
-    'rgba(255,255,255,0.3)',
-    'rgba(255,255,255,0.2)',
-    'rgba(255,255,255,0.1)',
+    '#2A2A2A',
+    '#87D173',
+    '#A2ADFF',
+    '#B3E0FF',
   ],
 });
-const getLetterFrequencyColor = scaleOrdinal({
-  domain: letters.map((l) => l.letter),
-  range: ['rgba(93,30,91,1)', 'rgba(93,30,91,0.8)', 'rgba(93,30,91,0.6)', 'rgba(93,30,91,0.4)'],
-});
+
 
 const defaultMargin = { top: 20, right: 20, bottom: 20, left: 20 };
 
@@ -63,12 +45,8 @@ function PieChart({
   margin = defaultMargin,
   animate = true,
 }: PieProps) {
-  console.log('PieChart received width:', width, 'height:', height);
-  const [selectedBrowser, setSelectedBrowser] = useState<string | null>(null);
-  const [selectedAlphabetLetter, setSelectedAlphabetLetter] = useState<string | null>(null);
-
+  
   if (width < 10) {
-    console.log("PieChart not rendering because width is less than 10");
     return null;
   }
 
@@ -77,75 +55,33 @@ function PieChart({
   const radius = Math.min(innerWidth, innerHeight) / 2;
   const centerY = innerHeight / 2;
   const centerX = innerWidth / 2;
-  const donutThickness = 50;
+  const donutThickness = 30; // Adjusted donut thickness
 
   return (
-    <svg width={width} height={height}>
-      <GradientPinkBlue id="visx-pie-gradient" />
-      <rect rx={14} width={width} height={height} fill="url('#visx-pie-gradient')" />
+    <svg width={width} height={height} className="overflow-visible">
+      {/* Removed GradientPinkBlue and rect fill */}
       <Group top={centerY + margin.top} left={centerX + margin.left}>
         <Pie
-          data={
-            selectedBrowser ? browsers.filter(({ label }) => label === selectedBrowser) : browsers
-          }
-          pieValue={usage}
+          data={totalSales}
+          pieValue={salesValue}
           outerRadius={radius}
           innerRadius={radius - donutThickness}
           cornerRadius={3}
-          padAngle={0.005}
+          padAngle={0.02} // Adjusted padAngle for better separation
         >
           {(pie) => (
-            <AnimatedPie<BrowserUsage>
+            <AnimatedPie<SalesDatum>
               {...pie}
               animate={animate}
               getKey={(arc) => arc.data.label}
-              onClickDatum={({ data: { label } }) =>
-                animate &&
-                setSelectedBrowser(selectedBrowser && selectedBrowser === label ? null : label)
-              }
-              getColor={(arc) => getBrowserColor(arc.data.label)}
+              onClickDatum={() => { /* No-op for static display */ }}
+              getColor={(arc) => getSalesColor(arc.data.label)}
             />
           )}
         </Pie>
-        <Pie
-          data={
-            selectedAlphabetLetter
-              ? letters.filter(({ letter }) => letter === selectedAlphabetLetter)
-              : letters
-          }
-          pieValue={frequency}
-          pieSortValues={() => -1}
-          outerRadius={radius - donutThickness * 1.3}
-        >
-          {(pie) => (
-            <AnimatedPie<LetterFrequency>
-              {...pie}
-              animate={animate}
-              getKey={({ data: { letter } }) => letter}
-              onClickDatum={({ data: { letter } }) =>
-                animate &&
-                setSelectedAlphabetLetter(
-                  selectedAlphabetLetter && selectedAlphabetLetter === letter ? null : letter,
-                )
-              }
-              getColor={({ data: { letter } }) => getLetterFrequencyColor(letter)}
-            />
-          )}
-        </Pie>
+        {/* Central percentage text */}
       </Group>
-      {animate && (
-        <text
-          textAnchor="end"
-          x={width - 16}
-          y={height - 16}
-          fill="white"
-          fontSize={11}
-          fontWeight={300}
-          pointerEvents="none"
-        >
-          Click segments to update
-        </text>
-      )}
+      {/* Legend outside SVG for better control and matching image */}
     </svg>
   );
 }
@@ -234,16 +170,37 @@ function AnimatedPie<Datum>({
 }
 
 export default function TotalSalesChart() {
-    return (
-        <Card>
-            <CardHeader>
-                <CardTitle>Total Sales</CardTitle>
-            </CardHeader>
-            <CardContent className="min-h-[200px]">
-                <ParentSize>
-                    {({ width, height }) => <PieChart width={width} height={height} />}
-                </ParentSize>
-            </CardContent>
-        </Card>
-    )
+  const totalValue = totalSalesData.reduce((acc, curr) => acc + curr.value, 0);
+  const directSales = totalSalesData.find(item => item.label === "Direct")?.value || 0;
+  const directPercentage = totalValue > 0 ? ((directSales / totalValue) * 100).toFixed(1) : "0.0";
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Total Sales</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col items-center">
+        <div className="relative w-[200px] h-[200px]">
+          <PieChart width={200} height={200} />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="text-xl font-bold text-gray-800">{directPercentage}%</span>
+          </div>
+        </div>
+        <div className="space-y-1 w-full pl-8">
+          {totalSalesData.map((data, index) => (
+            <div key={index} className="flex justify-between items-center text-sm">
+              <div className="flex items-center gap-2">
+                <span
+                  className="h-3 w-3 rounded-full"
+                  style={{ backgroundColor: getSalesColor(data.label) }}
+                ></span>
+                <span>{data.label}</span>
+              </div>
+              <span className="font-medium">{data.amount}</span>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
 }

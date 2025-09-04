@@ -9,7 +9,10 @@ import TotalSalesChart from "@/components/charts/total-sales-chart";
 export default function Home() {
   return (
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
-      <div className="lg:col-span-3 flex flex-col gap-4">
+      <div className="text-bold">
+        E-commerce
+      </div>
+      <div className="lg:col-span-4 flex flex-col gap-4">
         <div className="flex gap-4">
           <div className="grid w-2/3 grid-cols-2 gap-4">
             <DashboardCard
@@ -49,11 +52,11 @@ export default function Home() {
             <RevenueByLocation />
           </div>
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="lg:col-span-2">
+        <div className="flex gap-4">
+          <div className="w-2/3">
             <TopSellingProductsTable />
           </div>
-          <div className="lg:col-span-1">
+          <div className="w-1/3">
             <TotalSalesChart />
           </div>
         </div>

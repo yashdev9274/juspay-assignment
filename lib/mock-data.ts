@@ -31,16 +31,17 @@ export const revenueData: RevenueDatum[] = [
 interface LocationRevenue {
   city: string;
   revenue: string;
+  countryCode: string;
 }
 
 export const revenueByLocationData: LocationRevenue[] = [
-  { city: "New York", revenue: "72K" },
-  { city: "San Francisco", revenue: "39K" },
-  { city: "Sydney", revenue: "25K" },
-  { city: "Singapore", revenue: "61K" },
+  { city: "New York", revenue: "72K", countryCode: "us" },
+  { city: "San Francisco", revenue: "39K", countryCode: "us" },
+  { city: "Sydney", revenue: "25K", countryCode: "au" },
+  { city: "Singapore", revenue: "61K", countryCode: "sg" },
 ];
 
-interface Product {
+export interface Product {
   name: string;
   price: string;
   quantity: number;
@@ -55,7 +56,7 @@ export const topSellingProductsData: Product[] = [
   { name: "Marco Shoes", price: "$79.49", quantity: 64, amount: "$1,965.81" },
 ];
 
-interface SalesDatum {
+export interface SalesDatum {
   label: string;
   value: number;
   amount: string;
