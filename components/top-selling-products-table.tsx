@@ -2,13 +2,24 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { topSellingProductsData } from "@/lib/mock-data";
 
-export function TopSellingProductsTable() {
+interface Product {
+  name: string;
+  price: string;
+  quantity: number;
+  amount: string;
+}
+
+interface TopSellingProductsTableProps {
+  data?: Product[];
+}
+
+export function TopSellingProductsTable({ data = topSellingProductsData }: TopSellingProductsTableProps) {
   return (
     <Card className="lg:col-span-2">
       <CardHeader>
         <CardTitle>Top Selling Products</CardTitle>
       </CardHeader>
-      <CardContent className="h-[250px] overflow-y-auto mb-11">
+      <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
@@ -19,7 +30,7 @@ export function TopSellingProductsTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {topSellingProductsData.map((product, index) => (
+            {data.map((product, index) => (
               <TableRow key={index}>
                 <TableCell className="font-medium">{product.name}</TableCell>
                 <TableCell>{product.price}</TableCell>

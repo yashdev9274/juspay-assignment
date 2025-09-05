@@ -1,9 +1,13 @@
 import Link from "next/link";
+// import { Button } from "../ui/button";
+// import { PanelLeft } from "lucide-react";
 
 export function Sidebar() {
   return (
     <div className="flex h-full flex-col overflow-y-auto border-r bg-background p-4 shadow-sm">
-      <div className="mb-6 text-2xl font-bold">ByeWind</div>
+      <div className="flex items-center justify-between">
+        <div className="mb-6 text-2xl font-bold">ByeWind</div>
+      </div>
       <nav className="flex-1 space-y-2">
         <h3 className="mb-2 text-xs font-semibold uppercase text-muted-foreground">
           Favorites

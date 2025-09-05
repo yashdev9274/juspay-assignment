@@ -4,6 +4,7 @@ import RevenueChart from "@/components/charts/revenue-chart";
 import { RevenueByLocation } from "@/components/revenue-by-location";
 import { TopSellingProductsTable } from "@/components/top-selling-products-table";
 import TotalSalesChart from "@/components/charts/total-sales-chart";
+import Link from 'next/link';
 
 
 export default function Home() {
@@ -54,7 +55,9 @@ export default function Home() {
         </div>
         <div className="flex gap-4">
           <div className="w-2/3">
-            <TopSellingProductsTable />
+            <Link href="/top-selling-products">
+              <TopSellingProductsTable />
+            </Link>
           </div>
           <div className="w-1/3">
             <TotalSalesChart />
