@@ -29,7 +29,8 @@ Server will run at 3000 port.
 
 * Sidebars
 
-*   Dashboard with key metrics:
+*   Dashboard with key metrics
+*   Search table content on /top-selling-products route, either click on top selling products
    
 *   Charts:
     *   Projections vs. Actuals
